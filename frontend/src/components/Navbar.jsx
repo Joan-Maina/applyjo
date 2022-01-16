@@ -1,9 +1,14 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory, NavLink } from "react-router-dom";
+import Sidenav from "./Sidenav";
+import "../App.css";
 
 function Navbar() {
   const history = useHistory();
+  const [show, setShow] = useState(false);
+  const handleShow = () => {
+    setShow(!show);
+  };
   const logout = (e) => {
     e.preventDefault();
     localStorage.removeItem("user");
@@ -25,29 +30,47 @@ function Navbar() {
             aria-controls="navbarNavAltMarkup"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            onClick={() => handleShow()}
           >
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-              <Link class="nav-link active" to="home">
-                {/* <a class="nav-link active" aria-current="page" href="#"> */}
-                Profile
-              </Link>
-              <Link class="nav-link" to="blog">
-                {/* <a href="#"> */}
+              <NavLink
+                className="navlink"
+                activeClassName="active"
+                to={"/home"}
+              >
+                <h5>Profile</h5>
+              </NavLink>
+              <NavLink
+                className="navlink"
+                activeClassName="active"
+                to={"/blog"}
+              >
                 Blog
-              </Link>
-              <Link class="nav-link" to="applications">
-                {" "}
-                Applications
-              </Link>
-
-              <button onClick={(e) => logout(e)}>Log out</button>
+              </NavLink>
+              <NavLink
+                className="navlink"
+                activeClassName="active"
+                to={"/appplication"}
+              >
+                Application
+              </NavLink>
+              <button className="logout" onClick={(e) => logout(e)}>
+                Log out
+              </button>
             </div>
           </div>
         </div>
       </nav>
+      <div className="sidenav">
+        {show && (
+          <div className="side">
+            <Sidenav />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

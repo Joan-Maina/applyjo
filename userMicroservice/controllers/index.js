@@ -9,7 +9,6 @@ const encrypt = require("../helpers/encrypt");
 const signup = async (req, res) => {
   try {
     const { fullname, username, email, password, confirmpassword } = req.body;
-
     if (password !== confirmpassword)
       return res.status(400).send("Passwords do not match");
 
@@ -19,12 +18,16 @@ const signup = async (req, res) => {
       email,
       password,
     });
+    console.log(error);
+
     if (error) return res.status(400).send(error.message);
+    console.log("joan");
     let { recordset } = await dbconnection.execute("getuser", { email });
     console.log(recordset);
     if (recordset.length !== 0) return res.status(401).send("Account exists");
 
     const pass = await encrypt(password);
+    console.log(pass);
     await dbconnection.execute("registeruser", {
       fullname,
       username,
@@ -33,6 +36,7 @@ const signup = async (req, res) => {
     });
     res.status(201).send("Successfully registered");
   } catch (error) {
+    console.log(error);
     res.status(400).send(error.message);
   }
 };
@@ -43,11 +47,10 @@ const login = async (req, res) => {
     let { email, password } = userDetails;
     let { recordset } = await dbconnection.execute("getuser", { email });
     let user = recordset[0];
-
+    console.log(user);
     if (!user) return res.status(401).send("Account does not exist");
 
     let auth = await bcrypt.compare(password, user.password);
-    console.log(email, password);
 
     if (!auth) return res.status(401).send("Incorrect password provided");
 
@@ -60,8 +63,8 @@ const login = async (req, res) => {
         "fullname",
         "username",
         "email",
+        "employer",
         "isAdmin",
-        "emplyer",
       ]),
       token,
     });
@@ -70,7 +73,17 @@ const login = async (req, res) => {
   }
 };
 
+const getusers = async (req, res) => {
+  try {
+    let { email } = req.body;
+    let { recordset } = await connection.execute("getusers", { email });
+    res.status(201).send(recordset);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
 module.exports = {
   signup,
   login,
+  getusers,
 };

@@ -1,6 +1,6 @@
-import { FETCHPOSTS } from "../types";
+import { FETCHOPPORTUNITIES, FETCHPOSTS } from "../types";
 
-const initialState = { posts: null };
+const initialState = { posts: null, opportunities: null };
 
 const postsReducer = (state = initialState, { type, payload }) => {
   switch (type) {
@@ -9,7 +9,11 @@ const postsReducer = (state = initialState, { type, payload }) => {
         ...state,
         posts: payload,
       };
-
+    case FETCHOPPORTUNITIES:
+      return {
+        ...state,
+        opportunities: payload,
+      };
     default:
       return state;
   }

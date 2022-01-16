@@ -1,14 +1,18 @@
-import { LOGIN } from "../types";
+import { GETUSERS, LOGIN } from "../types";
 
-const initialState = { user: {} };
+const initialState = { user: null, users: null };
 
 const authReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case LOGIN:
-      console.log(JSON.parse(localStorage.getItem("user")));
       return {
         ...state,
         user: JSON.parse(localStorage.getItem("user")),
+      };
+    case GETUSERS:
+      return {
+        ...state,
+        users: payload,
       };
     default:
       return state;

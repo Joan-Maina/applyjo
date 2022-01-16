@@ -22,3 +22,15 @@ form {
   width: 150px;
   margin-left: 120px;
 }
+span {
+  justify-content: space-evenly;
+  display: flex;
+}
+.title {
+  color: blue;
+  font-family: serif;
+  border-bottom: 2px solid gray;
+  width: fit-content;
+  text-align: end;
+  padding-top: 80px;
+}

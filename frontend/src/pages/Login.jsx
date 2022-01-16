@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import "../styles/Signup.css";
-import { login } from "../redux/actions/users";
+import { login } from "../redux/actions";
 import { useHistory } from "react-router-dom";
 
 function Login() {
@@ -23,10 +23,10 @@ function Login() {
         userDetails,
       });
       localStorage.setItem("user", JSON.stringify(data));
-      history.push("/home");
 
       setLoading(false);
       dispatch(login());
+      history.push("/home");
     } catch (error) {
       setLoading(false);
 
@@ -50,7 +50,7 @@ function Login() {
       <h1>LOG IN FORM</h1>
       {error !== null && <h4 style={{ color: "red" }}>{error}</h4>}
 
-      <form onSubmit={(e) => submit(e)}>
+      <form onSubmit={(e) => submit(e)} className="loginform">
         <label htmlFor="email">Enter email</label>
         <input
           value={userDetails.email}

@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Add from "../components/Add";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 import Navbar from "../components/Navbar";
-import { fetchposts, login } from "../redux/actions/users";
+import { fetchcomments, fetchposts, login } from "../redux/actions";
 import "../styles/Blog.css";
 
 function Blog() {
+  const { user } = JSON.parse(localStorage.getItem("user"));
   const dispatch = useDispatch();
-  // const { user } = useSelector((state) => state.auth);
-  const [details, setDetails] = useState("");
+  const history = useHistory();
   const [display, setDisplay] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,7 +28,6 @@ function Blog() {
         const { data } = await axios.post("http://localhost:9090/posts/fetch");
         dispatch(fetchposts(data));
         setLoading(false);
-        console.log(data);
       } catch (error) {
         setError(error.message);
         setLoading(false);
@@ -34,17 +36,16 @@ function Blog() {
     getPosts();
   }, [dispatch]);
   const { posts } = useSelector((state) => state.posts);
-  const handleChange = (e) => {
-    e.preventDefault();
-    setDetails(e.target.value);
-    console.log(details);
-  };
-  const submit = async (postid) => {
-    console.log(postid);
+  const { comments } = useSelector((state) => state.comments);
+  const checkComments = async (postid) => {
     try {
-      const { data } = await axios.post("http://localhost:9090/comments/add", {
-        postid,
-      });
+      const { data } = await axios.post(
+        "http://localhost:9090/comments/fetch",
+        { postid }
+      );
+      dispatch(fetchcomments(data));
+
+      history.push("/comments", postid);
     } catch (error) {
       setError(error.message);
     }
@@ -52,31 +53,16 @@ function Blog() {
   return (
     <>
       <Navbar />
-      <h2
-        style={{
-          color: "blue",
-          fontFamily: "serif",
-          borderBottom: "2px solid gray",
-          width: "fit-content",
-        }}
-      >
-        Entertain
-      </h2>
+      <h2 className="title">Entertain</h2>
       <div className="blog">
         {posts?.map((post) => (
           <div key={post.postId} className="post">
             <h3>{post.postTitle}</h3>
             <p>{post.details}</p>
-            <form onSubmit={(e) => submit(e, post.postId)} autocomplete="off">
-              <input
-                type="text"
-                id="details"
-                placeholder="commnet"
-                required
-                onChange={(e) => handleChange(e)}
-              />
-              <button>comment</button>
-            </form>
+
+            <button onClick={() => checkComments(post.postId)}>
+              View comments
+            </button>
           </div>
         ))}
         {display ? (

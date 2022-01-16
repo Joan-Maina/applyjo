@@ -10,3 +10,15 @@ BEGIN
 VALUES
 (@details, @postId)
     END;
+
+-- FETCH COMMMENTS
+	CREATE OR ALTER PROCEDURE [dbo].[fetchcomments]
+    @postid VARCHAR(255)
+AS
+SET NOCOUNT ON;
+BEGIN
+	SELECT 
+     blogcomments.commentId,blogcomments.details
+      FROM [dbo].[blogcomments] 
+           WHERE blogcomments.postId = @postid 
+END;

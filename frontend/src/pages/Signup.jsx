@@ -8,7 +8,7 @@ function Signup() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState({
-    firstname: "",
+    fullname: "",
     username: "",
     email: "",
     password: "",
@@ -23,13 +23,18 @@ function Signup() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:9000/users/signup", {
-        userDetails,
+      await axios.post("http://localhost:9000/users/signup", {
+        fullname: userDetails.fullname,
+        username: userDetails.username,
+        email: userDetails.email,
+        password: userDetails.password,
+        confirmpassword: userDetails.confirmpassword,
       });
       setLoading(false);
 
       history.push("/");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       setError("Check the details");
     }
@@ -38,7 +43,7 @@ function Signup() {
     <div className="signupform">
       <h1>SIGN UP FORM</h1>
       {error !== null && <h4 style={{ color: "red" }}>{error}</h4>}
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)} className="loginform">
         <label for="fullname">Enter full names</label>
         <input
           id="fullname"
@@ -52,15 +57,17 @@ function Signup() {
           id="email"
           placeholder="Enter your email"
           type="text"
+          value={userDetails.email}
           required
           onChange={(e) => handle(e)}
         />
-        <label for="name">Enter username</label>
+        <label for="username">Enter username</label>
         <input
-          id="name"
+          id="username"
           placeholder="Enter username"
           type="text"
           required
+          value={userDetails.username}
           onChange={(e) => handle(e)}
         />
         <label for="password">Enter password</label>
@@ -69,6 +76,7 @@ function Signup() {
           placeholder="Enter password"
           type="password"
           required
+          value={userDetails.password}
           onChange={(e) => handle(e)}
         />
         <label for="confirm password">Confirm password</label>
@@ -77,6 +85,7 @@ function Signup() {
           placeholder="Confirm password"
           type="password"
           required
+          value={userDetails.confirmpassword}
           onChange={(e) => handle(e)}
         />
         {loading ? (
